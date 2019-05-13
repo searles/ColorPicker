@@ -144,7 +144,7 @@ class ColorWheelView(context: Context, attrs: AttributeSet) : View(context, attr
         this.triangle.updateDimensions()
     }
 
-    public override fun onDraw(canvas: Canvas) {
+    override fun onDraw(canvas: Canvas) {
         circle.draw(canvas)
         triangle.draw(canvas)
     }
@@ -195,6 +195,9 @@ class ColorWheelView(context: Context, attrs: AttributeSet) : View(context, attr
         }
     }
 
+    /**
+     * Sets a listener that is invoked when the color is modified.
+     */
     fun setOnColorChangedListener(listener: (View, Int) -> Unit) {
         this.listener = listener
     }
