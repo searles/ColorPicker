@@ -9,7 +9,6 @@ import android.view.MotionEvent
 import android.view.View
 import at.searles.colorpicker.utils.RgbCommons
 import at.searles.colorpicker.utils.RybColors
-
 import kotlin.math.min
 
 class ColorWheelView(context: Context, attrs: AttributeSet) : View(context, attrs) {

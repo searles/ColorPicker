@@ -10,7 +10,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val wheel = findViewById<ColorWheelView>(R.id.wheel)
+        val wheel = findViewById<at.searles.colorpicker.ColorWheelView>(R.id.wheel)
         val colorView = findViewById<View>(R.id.colorView)
 
         wheel.setOnColorChangedListener { _, color -> colorView.setBackgroundColor(color) }
