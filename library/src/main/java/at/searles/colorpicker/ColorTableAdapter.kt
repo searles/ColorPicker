@@ -3,51 +3,68 @@ package at.searles.colorpicker
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import android.content.Context
-import android.graphics.drawable.GradientDrawable
+import android.graphics.Color
+import android.support.v7.recyclerview.extensions.ListAdapter
 import android.view.LayoutInflater
 
-class ColorTableAdapter(val context: Context) : RecyclerView.Adapter<ColorTableAdapter.ColorViewHolder>() {
+class ColorTableAdapter(context: Context) : ListAdapter<ColorEntry, ColorTableAdapter.ColorViewHolder>(ColorEntry.DiffCallback) {
 
     private val mInflater: LayoutInflater = LayoutInflater.from(context)
-    private val colorList: ArrayList<Int> = ArrayList()
-    private val colorNames: HashMap<Int, String> = HashMap()
 
-    init {
-        // fixme
-        colorList.add(0xff0000)
-        colorNames[0xff0000] = "red"
-
-        colorList.add(0xffff00)
-        colorNames[0xffff00] = "yellow"
-
-        colorList.add(0x00ff00)
-        colorNames[0x00ff00] = "green"
-
-        colorList.add(0x0000ff)
-        colorNames[0x0000ff] = "blue"
-    }
+    var listener: ((ColorEntry) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ColorViewHolder {
         val mItemView = mInflater.inflate(R.layout.color_item, parent, false)
-        return ColorViewHolder(mItemView)
-    }
-
-    override fun getItemCount(): Int {
-        return colorList.size
+        return ColorViewHolder(this, mItemView)
     }
 
     override fun onBindViewHolder(viewHolder: ColorViewHolder, position: Int) {
-        val rgb: Int = colorList[position]
-
-        viewHolder.textView.text = colorNames[rgb]
-        viewHolder.colorPreview.color = rgb
+        viewHolder.bindTo(getItem(position))
     }
 
-    class ColorViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val textView = itemView.findViewById<TextView>(R.id.colorTextView)
-        val colorPreview = itemView.findViewById<ColorIconView>(R.id.colorPreview)
+    fun findColor(color: Int): ColorEntry? {
+        for(i in 0 until itemCount) {
+            val item = getItem(i)
+            if (item.rgb == color) {
+                return item
+            }
+        }
+
+        // not found
+        return null
+    }
+
+    fun findColor(colorString: String): ColorEntry? {
+        for(i in 0 until itemCount) {
+            val item = getItem(i)
+            if (item.name == colorString) {
+                return item
+            }
+        }
+
+        // not found
+        return null
+    }
+
+    class ColorViewHolder(private val parent: ColorTableAdapter, itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+
+        private val textView = itemView.findViewById<TextView>(R.id.colorTextView)
+        private val colorPreview = itemView.findViewById<ColorIconView>(R.id.colorPreview)
+
+        init {
+            itemView.setOnClickListener(this)
+        }
+
+        override fun onClick(v: View?) {
+            // Use that to access the affected item in mWordList.
+            parent.listener?.invoke(parent.getItem(layoutPosition))
+        }
+
+        fun bindTo(item: ColorEntry) {
+            textView.text = item.name
+            colorPreview.color = item.rgb
+        }
     }
 }

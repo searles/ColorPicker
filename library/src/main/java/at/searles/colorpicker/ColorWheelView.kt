@@ -148,6 +148,11 @@ class ColorWheelView(context: Context, attrs: AttributeSet) : View(context, attr
         triangle.draw(canvas)
     }
 
+    override fun performClick(): Boolean {
+        super.performClick()
+        return true
+    }
+
     override fun onTouchEvent(event: MotionEvent): Boolean {
         val action = event.actionMasked
 
@@ -167,9 +172,15 @@ class ColorWheelView(context: Context, attrs: AttributeSet) : View(context, attr
                     circle.dragTo(event.getX(i), event.getY(i), id)
                     triangle.dragTo(event.getX(i), event.getY(i), id)
                 }
-                MotionEvent.ACTION_POINTER_UP, MotionEvent.ACTION_UP -> {
+                MotionEvent.ACTION_POINTER_UP -> {
                     circle.unselect(id)
                     triangle.unselect(id)
+                }
+                MotionEvent.ACTION_UP -> {
+                    circle.unselect(id)
+                    triangle.unselect(id)
+
+                    performClick()
                 }
                 else -> super.onTouchEvent(event)
             }
@@ -355,19 +366,19 @@ class ColorWheelView(context: Context, attrs: AttributeSet) : View(context, attr
             paint.style = Paint.Style.FILL
         }
 
-        fun x(x: Float): Float {
+        private fun x(x: Float): Float {
             return x * radius + centerX
         }
 
-        fun y(y: Float): Float {
+        private fun y(y: Float): Float {
             return y * radius + centerY
         }
 
-        fun ix(x: Float): Float {
+        private fun ix(x: Float): Float {
             return (x - centerX) / radius
         }
 
-        fun iy(y: Float): Float {
+        private fun iy(y: Float): Float {
             return (y - centerY) / radius
         }
 
@@ -385,14 +396,17 @@ class ColorWheelView(context: Context, attrs: AttributeSet) : View(context, attr
             return setSelectedPoint(x, y, id, true)
         }
 
-        fun dragTo(x: Float, y: Float, id: Int) {
-            setSelectedPoint(x, y, id, false)
+        fun dragTo(x: Float, y: Float, id: Int): Boolean {
+            return setSelectedPoint(x, y, id, false)
         }
 
-        fun unselect(id: Int) {
+        fun unselect(id: Int): Boolean {
             if (selectedId == id) {
                 selectedId = -1
+                return true
             }
+
+            return false
         }
 
         fun setSelectedPoint(vx: Float, vy: Float, id: Int, init: Boolean): Boolean {
