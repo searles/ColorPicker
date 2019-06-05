@@ -11,6 +11,9 @@ import at.searles.colorpicker.utils.RgbCommons
 import at.searles.colorpicker.utils.RybColors
 import kotlin.math.min
 
+/**
+ * Plain view showing a color wheel.
+ */
 class ColorWheelView(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
     private val colorKey = "color"

@@ -14,19 +14,24 @@ import android.widget.EditText
 
 class ColorTableFragment: Fragment() {
 
-    lateinit var mAdapter: ColorTableAdapter
-    lateinit var mColorEditText: EditText
-    lateinit var mColorPreview: ColorIconView
+    private lateinit var mAdapter: ColorTableAdapter
+    private lateinit var mColorTable: RecyclerView
+    private lateinit var mColorEditText: EditText
+    private lateinit var mColorPreview: ColorIconView
 
     var listener: ((Int) -> Unit)? = null
 
-    private var mTextListenerActive: Boolean = true
+    // this is used to deactivate the text listener
+    private var isSetExternally: Boolean = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.color_table_fragment, container, false)
+        return inflater.inflate(R.layout.color_table_fragment, container, false)
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         mColorEditText = view.findViewById(R.id.colorEditText)
         mColorPreview = view.findViewById(R.id.colorPreview)
+        mColorTable = view.findViewById(R.id.colorTable)
 
         mAdapter = ColorTableAdapter(context!!)
         mAdapter.submitList(createDefaultColorList())
@@ -39,11 +44,10 @@ class ColorTableFragment: Fragment() {
         }
 
         // Connect the adapter with the RecyclerView.
-        val mRecyclerView = view.findViewById<RecyclerView>(R.id.colorTable)
-        mRecyclerView.adapter = mAdapter
+        mColorTable.adapter = mAdapter
 
         // Give the RecyclerView a default layout manager.
-        mRecyclerView.layoutManager = LinearLayoutManager(context!!)
+        mColorTable.layoutManager = LinearLayoutManager(context!!)
 
         mColorEditText.addTextChangedListener(object: TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -55,35 +59,47 @@ class ColorTableFragment: Fragment() {
             }
 
             override fun afterTextChanged(string: Editable) {
-                if(!mTextListenerActive || string.isEmpty()) {
+                if(isSetExternally || string.isEmpty()) {
+                    // fixme clear marking
                     return
                 }
 
-                val item = mAdapter.findColor(string.toString())
+                val position = mAdapter.indexOf(string.toString())
 
                 try {
-                    val color: Int = item?.rgb ?: Color.parseColor(string.toString())
-                    mColorPreview.color = color
+                    val color: Int = if (position != -1) {
+                        mColorTable.scrollToPosition(position)
+                        mAdapter.getColorEntry(position).rgb
+                    } else {
+                        Color.parseColor(string.toString())
+                    }
 
+                    mColorPreview.color = color
                     listener?.invoke(color)
                 } catch(_: IllegalArgumentException) {
                     // ignore. It is a parse error.
+                    // fixme special error marking
                 }
             }
         })
-
-        return view
     }
 
-    /**
-     * Calling this method will not trigger the listener
-     */
     fun setColor(color: Int) {
-        val colorString = mAdapter.findColor(color)?.name ?: String.format("#%06x", color and 0xffffff)
+        val position = mAdapter.indexOf(color)
 
-        mTextListenerActive = false
+        val colorString =
+            when {
+                position != -1 -> {
+                    mColorTable.scrollToPosition(position)
+                    mAdapter.getColorEntry(position).name
+                }
+                Color.alpha(color) != 0xff -> String.format("#%08x", color)
+                else -> String.format("#%06x", color and 0xffffff)
+            }
+
+        isSetExternally = true
         mColorEditText.setText(colorString)
-        mTextListenerActive = true
+        isSetExternally = false
 
         mColorPreview.color = color
     }

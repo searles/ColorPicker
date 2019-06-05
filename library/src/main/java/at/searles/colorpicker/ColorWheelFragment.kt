@@ -5,33 +5,38 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import kotlinx.android.synthetic.main.color_wheel_fragment.*
 
 class ColorWheelFragment: Fragment() {
 
     var listener: ((Int) -> Unit)? = null
 
+    private var mColorWheelView: ColorWheelView? = null
+    private var mColorPreview: ColorIconView? = null
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.color_wheel_fragment, container, false)
+        return inflater.inflate(R.layout.color_wheel_fragment, container, false)
+    }
 
-        val wheel = view.findViewById<at.searles.colorpicker.ColorWheelView>(R.id.wheel)
-        val wheelColorPreview = view.findViewById<View>(R.id.wheelColorPreview)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        mColorWheelView = view.findViewById(R.id.wheel)
+        mColorPreview = view.findViewById(R.id.wheelColorPreview)
 
-        wheelColorPreview.setBackgroundColor(wheel.color)
+        // the color wheel handles orientation changes.
+        mColorPreview!!.color = mColorWheelView!!.color
 
-        wheel.setOnColorChangedListener { _, color -> run {
-            wheelColorPreview.setBackgroundColor(color)
-            listener?.invoke(color)
-        } }
-
-        return view
+        mColorWheelView!!.setOnColorChangedListener {
+            _, newColor -> run {
+                mColorPreview!!.color = newColor
+                listener?.invoke(newColor)
+            }
+        }
     }
 
     /**
-     * Calling this method will not trigger the listener.
+     * Set color from outside
      */
     fun setColor(color: Int) {
-        wheel.color = color
-        wheelColorPreview.setBackgroundColor(color)
+        mColorWheelView!!.color = color
+        mColorPreview!!.color = color
     }
 }

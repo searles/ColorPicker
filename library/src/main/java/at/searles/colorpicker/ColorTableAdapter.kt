@@ -24,33 +24,36 @@ class ColorTableAdapter(context: Context) : ListAdapter<ColorEntry, ColorTableAd
         viewHolder.bindTo(getItem(position))
     }
 
-    fun findColor(color: Int): ColorEntry? {
+    fun indexOf(color: Int): Int {
         for(i in 0 until itemCount) {
             val item = getItem(i)
             if (item.rgb == color) {
-                return item
+                return i
             }
         }
 
         // not found
-        return null
+        return -1
     }
 
-    fun findColor(colorString: String): ColorEntry? {
+    fun indexOf(colorString: String): Int {
         for(i in 0 until itemCount) {
             val item = getItem(i)
             if (item.name == colorString) {
-                return item
+                return i
             }
         }
 
         // not found
-        return null
+        return -1
     }
+
+    fun getColorEntry(position: Int): ColorEntry = getItem(position)
 
     class ColorViewHolder(private val parent: ColorTableAdapter, itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
 
-        private val textView = itemView.findViewById<TextView>(R.id.colorTextView)
+        private val colorTextView = itemView.findViewById<TextView>(R.id.colorTextView)
+        private val rgbTextView = itemView.findViewById<TextView>(R.id.rgbTextView)
         private val colorPreview = itemView.findViewById<ColorIconView>(R.id.colorPreview)
 
         init {
@@ -63,8 +66,9 @@ class ColorTableAdapter(context: Context) : ListAdapter<ColorEntry, ColorTableAd
         }
 
         fun bindTo(item: ColorEntry) {
-            textView.text = item.name
+            colorTextView.text = item.name
             colorPreview.color = item.rgb
+            rgbTextView.text = String.format("#%06x", item.rgb and 0x00ffffff)
         }
     }
 }

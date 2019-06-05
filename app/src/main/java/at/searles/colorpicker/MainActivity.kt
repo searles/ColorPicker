@@ -10,6 +10,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.color_view)
+        setContentView(R.layout.color_view_layout)
     }
 }
