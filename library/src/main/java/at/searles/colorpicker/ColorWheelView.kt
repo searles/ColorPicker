@@ -14,7 +14,10 @@ import kotlin.math.min
 /**
  * Plain view showing a color wheel.
  */
-class ColorWheelView(context: Context, attrs: AttributeSet) : View(context, attrs) {
+class ColorWheelView : View {
+
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
 
     private val colorKey = "color"
 
@@ -27,7 +30,7 @@ class ColorWheelView(context: Context, attrs: AttributeSet) : View(context, attr
     private val triangle: Triangle
     private val circle: HueCircle
 
-    private var listener: ((View, Int) -> Unit)? = null
+    var listener: ((View, Int) -> Unit)? = null
 
     // color is calculated as comp colorFraction + whiteFraction.
     // colorFraction is related to saturation while whiteFraction
@@ -206,13 +209,6 @@ class ColorWheelView(context: Context, attrs: AttributeSet) : View(context, attr
         if (state is Bundle) {
             this.color = state.getInt(colorKey)
         }
-    }
-
-    /**
-     * Sets a listener that is invoked when the color is modified.
-     */
-    fun setOnColorChangedListener(listener: (View, Int) -> Unit) {
-        this.listener = listener
     }
 
     private fun onColorChanged(color: Int) {

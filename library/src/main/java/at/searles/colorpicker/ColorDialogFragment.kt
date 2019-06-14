@@ -44,7 +44,7 @@ class ColorDialogFragment: DialogFragment() {
 //    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 //        super.onViewCreated(view, savedInstanceState)
 //
-//        val colorViewFragment = view.findViewById<ColorViewFragment>(R.id.colorView)
+//        val colorViewFragment = view.findViewById<CombinedColorView>(R.id.colorView)
 //
 //
 //    }

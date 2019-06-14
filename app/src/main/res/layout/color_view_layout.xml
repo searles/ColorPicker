@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+    <Button
+            android:text="Wheel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:id="@+id/wheelButton" android:onClick="onDialogStart"/>
+    <Button
+            android:text="Table"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:id="@+id/tableButton" android:onClick="onDialogStart"/>
+    <Button
+            android:text="Combined"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:id="@+id/combinedButton" android:onClick="onDialogStart"/>
+    <at.searles.colorpicker.ColorIconView
+            android:layout_width="match_parent"
+            android:layout_height="128dp" android:id="@+id/selectedColor"/>
+</LinearLayout>

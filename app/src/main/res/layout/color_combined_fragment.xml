@@ -3,8 +3,7 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
-    <fragment
+    <at.searles.colorpicker.CombinedColorView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" android:name="at.searles.colorpicker.ColorViewFragment"
-            android:id="@+id/fragment"/>
+            android:layout_height="match_parent" android:id="@+id/colorView"/>
 </LinearLayout>

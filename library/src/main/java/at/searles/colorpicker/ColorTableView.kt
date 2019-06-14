@@ -1,39 +1,42 @@
 package at.searles.colorpicker
 
+import android.content.Context
 import android.graphics.Color
-import android.os.Bundle
-import android.support.v4.app.Fragment
+import android.support.constraint.ConstraintLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.text.Editable
+import android.text.Layout
 import android.text.TextWatcher
+import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.LinearLayout
 
-class ColorTableFragment: Fragment() {
+class ColorTableView: LinearLayout {
 
-    private lateinit var mAdapter: ColorTableAdapter
-    private lateinit var mColorTable: RecyclerView
-    private lateinit var mColorEditText: EditText
-    private lateinit var mColorPreview: ColorIconView
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
+
+    private val mAdapter: ColorTableAdapter
+    private val mColorTable: RecyclerView
+    private val mColorEditText: EditText
+    private val mColorPreview: ColorIconView
 
     var listener: ((Int) -> Unit)? = null
 
     // this is used to deactivate the text listener
     private var isSetExternally: Boolean = false
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.color_table_fragment, container, false)
-    }
+    init {
+        orientation = VERTICAL
+        val view = LayoutInflater.from(context).inflate(R.layout.color_table_view, this, true)
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         mColorEditText = view.findViewById(R.id.colorEditText)
         mColorPreview = view.findViewById(R.id.colorPreview)
         mColorTable = view.findViewById(R.id.colorTable)
 
-        mAdapter = ColorTableAdapter(context!!)
+        mAdapter = ColorTableAdapter(context)
         mAdapter.submitList(createDefaultColorList())
 
         // set adapter listener
@@ -60,11 +63,11 @@ class ColorTableFragment: Fragment() {
 
             override fun afterTextChanged(string: Editable) {
                 if(isSetExternally || string.isEmpty()) {
-                    // fixme clear marking
+                    mColorEditText.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
                     return
                 }
 
-                val position = mAdapter.indexOf(string.toString())
+                val position = mAdapter.indexOf(string.toString().trim())
 
                 try {
                     val color: Int = if (position != -1) {
@@ -74,11 +77,15 @@ class ColorTableFragment: Fragment() {
                         Color.parseColor(string.toString())
                     }
 
+                    // clear error marks
+                    mColorEditText.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
+
                     mColorPreview.color = color
                     listener?.invoke(color)
                 } catch(_: IllegalArgumentException) {
                     // ignore. It is a parse error.
-                    // fixme special error marking
+                    // set marks to indicate that the color is invalid
+                    mColorEditText.setCompoundDrawablesWithIntrinsicBounds(0, 0, android.R.drawable.sym_action_call, 0)
                 }
             }
         })
