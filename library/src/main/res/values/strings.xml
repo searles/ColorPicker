@@ -5,4 +5,5 @@
     <string name="tab_color_wheel">Color Wheel</string>
     <string name="colorTableLabel">Color Table</string>
     <string name="colorWheelLabel">Color Wheel</string>
+    <string name="invalidColorMessage">invalid color</string>
 </resources>

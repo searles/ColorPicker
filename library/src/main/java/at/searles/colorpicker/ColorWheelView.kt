@@ -14,10 +14,8 @@ import kotlin.math.min
 /**
  * Plain view showing a color wheel.
  */
-class ColorWheelView : View {
+class ColorWheelView(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
-    constructor(context: Context) : super(context)
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
 
     private val colorKey = "color"
 
@@ -66,7 +64,7 @@ class ColorWheelView : View {
         }
 
     init {
-        setLayerType(View.LAYER_TYPE_SOFTWARE, null) // for composedshader
+        setLayerType(LAYER_TYPE_SOFTWARE, null) // for composedshader
 
         this.triangle = Triangle()
         this.circle = HueCircle()
@@ -81,59 +79,59 @@ class ColorWheelView : View {
         // thanks to http://stackoverflow.com/questions/12266899/onmeasure-custom-view-explanation
         val desiredSize = (desiredSizeDp * context.resources.displayMetrics.density).toInt()
 
-        val widthMode = View.MeasureSpec.getMode(widthMeasureSpec)
-        val widthSize = View.MeasureSpec.getSize(widthMeasureSpec)
-        val heightMode = View.MeasureSpec.getMode(heightMeasureSpec)
-        val heightSize = View.MeasureSpec.getSize(heightMeasureSpec)
+        val widthMode = MeasureSpec.getMode(widthMeasureSpec)
+        val widthSize = MeasureSpec.getSize(widthMeasureSpec)
+        val heightMode = MeasureSpec.getMode(heightMeasureSpec)
+        val heightSize = MeasureSpec.getSize(heightMeasureSpec)
 
         var width: Int = -1
         var height: Int = -1
 
         // just an extensive case distinction
         when(widthMode) {
-            View.MeasureSpec.EXACTLY -> {
+            MeasureSpec.EXACTLY -> {
                 when(heightMode) {
-                    View.MeasureSpec.EXACTLY -> {
+                    MeasureSpec.EXACTLY -> {
                         width = widthSize
                         height = heightSize
                     }
-                    View.MeasureSpec.AT_MOST -> {
+                    MeasureSpec.AT_MOST -> {
                         width = widthSize
                         height = min(widthSize, heightSize)
                     }
-                    View.MeasureSpec.UNSPECIFIED -> {
+                    MeasureSpec.UNSPECIFIED -> {
                         width = widthSize
                         height = widthSize
                     }
                 }
             }
-            View.MeasureSpec.AT_MOST -> {
+            MeasureSpec.AT_MOST -> {
                 when(heightMode) {
-                    View.MeasureSpec.EXACTLY -> {
+                    MeasureSpec.EXACTLY -> {
                         width = min(widthSize, heightSize)
                         height = heightSize
                     }
-                    View.MeasureSpec.AT_MOST -> {
+                    MeasureSpec.AT_MOST -> {
                         width = min(min(widthSize, heightSize), desiredSize)
                         height = width
                     }
-                    View.MeasureSpec.UNSPECIFIED -> {
+                    MeasureSpec.UNSPECIFIED -> {
                         width = min(desiredSize, widthSize)
                         height = width
                     }
                 }
             }
-            View.MeasureSpec.UNSPECIFIED -> {
+            MeasureSpec.UNSPECIFIED -> {
                 when(heightMode) {
-                    View.MeasureSpec.EXACTLY -> {
+                    MeasureSpec.EXACTLY -> {
                         width = heightSize
                         height = heightSize
                     }
-                    View.MeasureSpec.AT_MOST -> {
+                    MeasureSpec.AT_MOST -> {
                         width = min(desiredSize, heightSize)
                         height = width
                     }
-                    View.MeasureSpec.UNSPECIFIED -> {
+                    MeasureSpec.UNSPECIFIED -> {
                         width = desiredSize
                         height = desiredSize
                     }
@@ -196,7 +194,7 @@ class ColorWheelView : View {
     }
 
     override fun onSaveInstanceState(): Parcelable? {
-        super.onSaveInstanceState() // ignore. Parent is a View.
+        super.onSaveInstanceState() // ignore. Parent is a 
 
         val bundle = Bundle()
         bundle.putInt(colorKey, color)
@@ -204,7 +202,7 @@ class ColorWheelView : View {
     }
 
     override fun onRestoreInstanceState(state: Parcelable?) {
-        super.onRestoreInstanceState(null) // ignore, parent is a View.
+        super.onRestoreInstanceState(null) // ignore, parent is a 
 
         if (state is Bundle) {
             this.color = state.getInt(colorKey)
@@ -264,7 +262,7 @@ class ColorWheelView : View {
             return true
         }
 
-        fun setSelectedPoint(x: Float, y: Float, id: Int, init: Boolean): Boolean {
+        private fun setSelectedPoint(x: Float, y: Float, id: Int, init: Boolean): Boolean {
             if (!init && selectedId != id) {
                 return false
             }
@@ -310,7 +308,7 @@ class ColorWheelView : View {
             drawDot(canvas, x0, y0)
         }
 
-        fun initGradients() {
+        private fun initGradients() {
             val colors = IntArray(RybColors.colorSegmentsCount() + 1)
 
             for (i in 0 until RybColors.colorSegmentsCount()) {
@@ -338,13 +336,13 @@ class ColorWheelView : View {
     }
 
     internal inner class Triangle {
-        val sin120 = (Math.sqrt(3.0) / 2.0).toFloat()
-        val cos120 = -0.5f
+        private val sin120 = (Math.sqrt(3.0) / 2.0).toFloat()
+        private val cos120 = -0.5f
 
         // the following coordinates are in pixels
-        var centerX: Float = 0F
-        var centerY: Float = 0F
-        var radius: Float = 0F
+        private var centerX: Float = 0F
+        private var centerY: Float = 0F
+        private var radius: Float = 0F
 
         // The triangle. Initially hue is assumed to be 0.
         private var ax: Float = 1F // corner of color
@@ -408,7 +406,7 @@ class ColorWheelView : View {
             return false
         }
 
-        fun setSelectedPoint(vx: Float, vy: Float, id: Int, init: Boolean): Boolean {
+        private fun setSelectedPoint(vx: Float, vy: Float, id: Int, init: Boolean): Boolean {
             if (!init && selectedId != id) {
                 // id is not the finger that selected this triangle initially.
                 return false
@@ -532,7 +530,7 @@ class ColorWheelView : View {
             this.updateTriange()
         }
 
-        fun updateTriange() {
+        private fun updateTriange() {
             // Triangle
             path.rewind()
 

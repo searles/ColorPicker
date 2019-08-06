@@ -14,6 +14,7 @@ import android.widget.LinearLayout
 
 class CombinedColorView(context: Context, attrs: AttributeSet): LinearLayout(context, attrs) {
 
+    private val viewPager: ViewPager
     private var wheelView: ColorWheelView? = null
     private var wheelPreview: ColorIconView? = null
     private var tableView: ColorTableView? = null
@@ -29,6 +30,10 @@ class CombinedColorView(context: Context, attrs: AttributeSet): LinearLayout(con
             tableView?.setColor(value)
         }
 
+    var pageItem: Int
+        get() = viewPager.currentItem
+        set(value) { viewPager.currentItem = value }
+
     private var mColor = 0xffff0000.toInt()
 
     init {
@@ -36,7 +41,7 @@ class CombinedColorView(context: Context, attrs: AttributeSet): LinearLayout(con
 
         val view = LayoutInflater.from(context).inflate(R.layout.color_view, this, true)
 
-        val viewPager = view.findViewById<ViewPager>(R.id.viewPager)
+        viewPager = view.findViewById(R.id.viewPager)
 
         viewPager.adapter = ColorPagerAdapter(this, context)
 
@@ -50,6 +55,7 @@ class CombinedColorView(context: Context, attrs: AttributeSet): LinearLayout(con
 
         return Bundle().also {
             it.putInt("color", color)
+            it.putInt("pageItem", pageItem) // save tab index
         }
     }
 
@@ -59,9 +65,9 @@ class CombinedColorView(context: Context, attrs: AttributeSet): LinearLayout(con
         if(state is Bundle) {
             // this also sets the colors in all views.
             color = state.getInt("color")
+            pageItem = state.getInt("pageItem")
         }
     }
-
 
     class ColorPagerAdapter(private val parent: CombinedColorView, private val context: Context) : PagerAdapter() {
         override fun isViewFromObject(view: View, obj: Any): Boolean = view == obj

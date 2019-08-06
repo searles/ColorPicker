@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
 
     class WheelDialogFragment: DialogFragment() {
 
-        var color: Int = 0xffff0000.toInt() // save on rotate
+        private var color: Int = 0xffff0000.toInt() // save on rotate
 
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
@@ -108,17 +108,23 @@ class MainActivity : AppCompatActivity() {
     class CombinedDialogFragment : DialogFragment() {
 
         private var color: Int = 0xffff0000.toInt()
+        private var pageItem: Int = 0
 
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
+
             color = savedInstanceState?.getInt("color") ?: (activity as MainActivity).color
+            pageItem = savedInstanceState?.getInt("pageItem") ?: 0
         }
 
         override fun onSaveInstanceState(outState: Bundle) {
             outState.putInt("color", color)
+            val colorView = dialog.findViewById<CombinedColorView>(R.id.colorView)
+            outState.putInt("pageItem", colorView.pageItem)
         }
 
         override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+            // XXX why doesn't the view store its state in this case?
             val builder = AlertDialog.Builder(context!!)
             builder.setView(R.layout.color_combined_fragment)
 
@@ -126,9 +132,11 @@ class MainActivity : AppCompatActivity() {
 
             val dialog = builder.show()
 
-            val view  = dialog.findViewById<CombinedColorView>(R.id.colorView)!!
+            val view = dialog.findViewById<CombinedColorView>(R.id.colorView)!!
+
             view.listener = { color = it }
 
+            view.pageItem = pageItem
             view.color = color
 
             return dialog

@@ -2,11 +2,9 @@ package at.searles.colorpicker
 
 import android.content.Context
 import android.graphics.Color
-import android.support.constraint.ConstraintLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.text.Editable
-import android.text.Layout
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -14,6 +12,8 @@ import android.widget.EditText
 import android.widget.LinearLayout
 
 class ColorTableView: LinearLayout {
+
+    // TODO: Textfield Warning if no match, offer colors as text choices
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
@@ -63,7 +63,6 @@ class ColorTableView: LinearLayout {
 
             override fun afterTextChanged(string: Editable) {
                 if(isSetExternally || string.isEmpty()) {
-                    mColorEditText.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
                     return
                 }
 
@@ -77,15 +76,12 @@ class ColorTableView: LinearLayout {
                         Color.parseColor(string.toString())
                     }
 
-                    // clear error marks
-                    mColorEditText.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
-
                     mColorPreview.color = color
                     listener?.invoke(color)
                 } catch(_: IllegalArgumentException) {
                     // ignore. It is a parse error.
                     // set marks to indicate that the color is invalid
-                    mColorEditText.setCompoundDrawablesWithIntrinsicBounds(0, 0, android.R.drawable.sym_action_call, 0)
+                    mColorEditText.error = context.getString(R.string.invalidColorMessage)
                 }
             }
         })

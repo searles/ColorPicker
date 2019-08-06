@@ -54,7 +54,7 @@ object RybColors {
         var i0 = (hue * keyColors.size).toInt()
         val fraction = hue * keyColors.size - i0
 
-        i0 = i0 % keyColors.size
+        i0 %= keyColors.size
         val i1 = (i0 + 1) % keyColors.size
 
         return RgbCommons.rgb2int(
@@ -126,7 +126,7 @@ object RybColors {
             a = t
         }
 
-        return a <= x && x <= b
+        return x in a..b
     }
 
     private fun rangeFraction(x: Float, a: Float, b: Float): Float {
