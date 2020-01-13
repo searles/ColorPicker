@@ -6,8 +6,10 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
+import at.searles.colorpicker.dialog.ColorDialogCallback
+import at.searles.colorpicker.dialog.ColorDialogFragment
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), ColorDialogCallback {
 
     private var selectedColorPreview: ColorIconView? = null
 
@@ -31,7 +33,8 @@ class MainActivity : AppCompatActivity() {
                 TableDialogFragment().show(supportFragmentManager, "dialog")
             }
             R.id.combinedButton -> {
-                CombinedDialogFragment().show(supportFragmentManager, "dialog")
+                ColorDialogFragment.newInstance(color)
+                    .show(supportFragmentManager, "dialog")
             }
         }
     }
@@ -105,41 +108,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    class CombinedDialogFragment : DialogFragment() {
-
-        private var color: Int = 0xffff0000.toInt()
-        private var pageItem: Int = 0
-
-        override fun onCreate(savedInstanceState: Bundle?) {
-            super.onCreate(savedInstanceState)
-
-            color = savedInstanceState?.getInt("color") ?: (activity as MainActivity).color
-            pageItem = savedInstanceState?.getInt("pageItem") ?: 0
-        }
-
-        override fun onSaveInstanceState(outState: Bundle) {
-            outState.putInt("color", color)
-            val colorView = dialog!!.findViewById<CombinedColorView>(R.id.colorView)
-            outState.putInt("pageItem", colorView.pageItem)
-        }
-
-        override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-            // XXX why doesn't the view store its state in this case?
-            val builder = AlertDialog.Builder(context!!)
-            builder.setView(R.layout.color_combined_fragment)
-
-            builder.setPositiveButton("Ok") { _, _ -> (activity as MainActivity).color = color }
-
-            val dialog = builder.show()
-
-            val view = dialog.findViewById<CombinedColorView>(R.id.colorView)!!
-
-            view.listener = { color = it }
-
-            view.pageItem = pageItem
-            view.color = color
-
-            return dialog
-        }
+    override fun setColor(dialogFragment: ColorDialogFragment, color: Int) {
+        this.color = color
     }
+
 }
