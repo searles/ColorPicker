@@ -1,12 +1,12 @@
 package at.searles.colorpicker
 
-import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.content.Context
-import android.support.v7.recyclerview.extensions.ListAdapter
 import android.view.LayoutInflater
+import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
 
 class ColorTableAdapter(context: Context) : ListAdapter<ColorEntry, ColorTableAdapter.ColorViewHolder>(ColorEntry.DiffCallback) {
 

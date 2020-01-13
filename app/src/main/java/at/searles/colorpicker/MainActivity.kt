@@ -1,11 +1,11 @@
 package at.searles.colorpicker
 
 import android.app.Dialog
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
-import android.support.v7.app.AlertDialog
 import android.view.View
+import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.DialogFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -119,7 +119,7 @@ class MainActivity : AppCompatActivity() {
 
         override fun onSaveInstanceState(outState: Bundle) {
             outState.putInt("color", color)
-            val colorView = dialog.findViewById<CombinedColorView>(R.id.colorView)
+            val colorView = dialog!!.findViewById<CombinedColorView>(R.id.colorView)
             outState.putInt("pageItem", colorView.pageItem)
         }
 

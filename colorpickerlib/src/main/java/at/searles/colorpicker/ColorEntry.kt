@@ -1,8 +1,6 @@
 package at.searles.colorpicker
 
-import android.support.v7.util.DiffUtil
-
-
+import androidx.recyclerview.widget.DiffUtil
 
 class ColorEntry(val name: String, val rgb: Int) {
 
