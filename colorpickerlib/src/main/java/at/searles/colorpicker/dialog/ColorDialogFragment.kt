@@ -15,8 +15,12 @@ class ColorDialogFragment : DialogFragment() {
         val builder = AlertDialog.Builder(context!!)
         builder.setView(R.layout.color_combined_fragment)
 
-        builder.setPositiveButton("Ok") { _, _ ->
+        builder.setPositiveButton(android.R.string.ok) { _, _ ->
             (activity as ColorDialogCallback).setColor(this@ColorDialogFragment, color)
+            dismiss()
+        }
+
+        builder.setNegativeButton(android.R.string.cancel) { _, _ ->
             dismiss()
         }
 
