@@ -11,7 +11,7 @@ import android.view.View
 
 class ColorIconView(context: Context, attrs: AttributeSet?): View(context, attrs) {
 
-    private val RADIUS = 8 // dp
+    private val radius = 8 // dp
     private val radiusPixel: Float
 
     var color: Int = Color.RED
@@ -29,7 +29,7 @@ class ColorIconView(context: Context, attrs: AttributeSet?): View(context, attrs
 
         paint.style = Paint.Style.FILL
 
-        radiusPixel = context.resources.displayMetrics.density * RADIUS
+        radiusPixel = context.resources.displayMetrics.density * radius
     }
 
     override fun onSaveInstanceState(): Parcelable? {

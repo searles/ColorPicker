@@ -9,7 +9,7 @@ import android.view.MotionEvent
 import android.view.View
 import at.searles.colorpicker.utils.RgbCommons
 import at.searles.colorpicker.utils.RybColors
-import kotlin.math.min
+import kotlin.math.*
 
 /**
  * Plain view showing a color wheel.
@@ -55,8 +55,8 @@ class ColorWheelView(context: Context, attrs: AttributeSet) : View(context, attr
             val rgbf = RgbCommons.int2rgb(rgb, FloatArray(3))
 
             this.hue = RybColors.hue(rgbf[0], rgbf[1], rgbf[2])
-            this.whiteFraction = Math.min(Math.min(rgbf[0], rgbf[1]), rgbf[2])
-            this.colorFraction = Math.max(Math.max(rgbf[0], rgbf[1]), rgbf[2]) - whiteFraction
+            this.whiteFraction = min(min(rgbf[0], rgbf[1]), rgbf[2])
+            this.colorFraction = max(max(rgbf[0], rgbf[1]), rgbf[2]) - whiteFraction
 
             triangle.hueUpdated()
 
@@ -190,7 +190,7 @@ class ColorWheelView(context: Context, attrs: AttributeSet) : View(context, attr
             }
         }
 
-        return true // fixme
+        return true
     }
 
     override fun onSaveInstanceState(): Parcelable? {
@@ -281,7 +281,7 @@ class ColorWheelView(context: Context, attrs: AttributeSet) : View(context, attr
             }
 
             // selected is true, update hue.
-            val h = (Math.atan2(dy.toDouble(), dx.toDouble()) / (2 * Math.PI)).toFloat()
+            val h = (atan2(dy.toDouble(), dx.toDouble()) / (2 * Math.PI)).toFloat()
 
             hue = if (h < 0f) h + 1 else h
 
@@ -297,8 +297,8 @@ class ColorWheelView(context: Context, attrs: AttributeSet) : View(context, attr
         fun draw(canvas: Canvas) {
             canvas.drawPath(hueCircle, huePaint)
 
-            val co = Math.cos(hue * 2.0 * Math.PI)
-            val si = Math.sin(hue * 2.0 * Math.PI)
+            val co = cos(hue * 2.0 * Math.PI)
+            val si = sin(hue * 2.0 * Math.PI)
 
             val rad = outerRadius - dotRadius * 1.5f
 
@@ -336,7 +336,7 @@ class ColorWheelView(context: Context, attrs: AttributeSet) : View(context, attr
     }
 
     internal inner class Triangle {
-        private val sin120 = (Math.sqrt(3.0) / 2.0).toFloat()
+        private val sin120 = (sqrt(3.0) / 2.0).toFloat()
         private val cos120 = -0.5f
 
         // the following coordinates are in pixels
@@ -479,18 +479,18 @@ class ColorWheelView(context: Context, attrs: AttributeSet) : View(context, attr
             }
 
             // set color coordinates
-            colorFraction = Math.max(0f, Math.min(1f, s))
-            whiteFraction = Math.max(0f, Math.min(1f, t))
+            colorFraction = max(0f, min(1f, s))
+            whiteFraction = max(0f, min(1f, t))
 
             // is there a drag? If yes, update hue.
             if (draggedCorner != -1) { // A is dragged
                 // adapt hue
-                hue = ((Math.atan2(
+                hue = ((atan2(
                     y.toDouble(),
                     x.toDouble()
                 ) + draggedCorner.toDouble() * Math.PI * 2.0 / 3.0) / (2 * Math.PI)).toFloat()
 
-                hue = (hue - Math.floor(hue.toDouble())).toFloat()
+                hue = (hue - floor(hue.toDouble())).toFloat()
 
                 hueUpdated()
             }
@@ -509,8 +509,8 @@ class ColorWheelView(context: Context, attrs: AttributeSet) : View(context, attr
         fun hueUpdated() {
             // corners of the triangle
 
-            ax = Math.cos(hue * 2.0 * Math.PI).toFloat()
-            ay = Math.sin(hue * 2.0 * Math.PI).toFloat()
+            ax = cos(hue * 2.0 * Math.PI).toFloat()
+            ay = sin(hue * 2.0 * Math.PI).toFloat()
 
             cx = ax * cos120 - ay * sin120
             cy = ax * sin120 + ay * cos120

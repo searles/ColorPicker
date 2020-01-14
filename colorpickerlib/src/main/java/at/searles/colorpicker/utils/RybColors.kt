@@ -1,5 +1,8 @@
 package at.searles.colorpicker.utils
 
+import kotlin.math.max
+import kotlin.math.min
+
 /**
  * special color model with yellow as own component.
  */
@@ -64,12 +67,12 @@ object RybColors {
         )
     }
 
-    fun hue(r: Float, g: Float, b: Float): Float {
-        var r = r
-        var g = g
-        var b = b
-        val max = Math.max(r, Math.max(g, b))
-        val min = Math.min(r, Math.min(g, b))
+    fun hue(r0: Float, g0: Float, b0: Float): Float {
+        var r = r0
+        var g = g0
+        var b = b0
+        val max = max(r, max(g, b))
+        val min = min(r, min(g, b))
 
         if (max - min == 0f) {
             // gray
@@ -105,8 +108,8 @@ object RybColors {
             }
         }
 
-        val fraction = Math.max(
-            Math.max(
+        val fraction = max(
+            max(
                 rangeFraction(r, keyColors[i0][0], keyColors[i1][0]),
                 rangeFraction(g, keyColors[i0][1], keyColors[i1][1])
             ),
@@ -117,23 +120,15 @@ object RybColors {
     }
 
     private fun inRange(x: Float, a: Float, b: Float): Boolean {
-        var a = a
-        var b = b
-        // Convenience from at.searles.math
         if (b < a) {
-            val t = b
-            b = a
-            a = t
+            return x in b..a
         }
 
         return x in a..b
     }
 
     private fun rangeFraction(x: Float, a: Float, b: Float): Float {
-        // Convenience from at.searles.math
-        return if (b - a == 0f) {
-            0f
-        } else (x - a) / (b - a)
+        return if (b - a == 0f) 0f else (x - a) / (b - a)
 
     }
 

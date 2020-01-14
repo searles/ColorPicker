@@ -1,5 +1,8 @@
 package at.searles.colorpicker.utils
 
+import kotlin.math.max
+import kotlin.math.min
+
 object RgbCommons {
     fun rgb2int(vararg rgba: Float): Int {
         val r = clamp(rgba[0] * 256.0f, 0.0f, 255.0f).toInt()
@@ -11,9 +14,9 @@ object RgbCommons {
         return a shl 24 or (r shl 16) or (g shl 8) or b
     }
 
-    private fun clamp(d: Float, min: Float, max: Float): Float {
+    private fun clamp(d: Float, lo: Float, hi: Float): Float {
         // convenience from at.searles.math
-        return Math.min(max, Math.max(min, d))
+        return min(hi, max(lo, d))
     }
 
     fun int2rgb(argb: Int, rgba: FloatArray): FloatArray {

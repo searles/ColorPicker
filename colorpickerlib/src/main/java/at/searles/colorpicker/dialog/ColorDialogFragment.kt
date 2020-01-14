@@ -40,12 +40,9 @@ class ColorDialogFragment : DialogFragment() {
     companion object {
         private const val colorKey = "color"
 
-        fun newInstance(color: Int): ColorDialogFragment {
-            val bundle = Bundle().apply {
-                putInt(colorKey, color)
-            }
-
+        fun newInstance(color: Int, bundle: Bundle = Bundle()): ColorDialogFragment {
             return ColorDialogFragment().apply {
+                bundle.putInt(colorKey, color)
                 arguments = bundle
             }
         }
