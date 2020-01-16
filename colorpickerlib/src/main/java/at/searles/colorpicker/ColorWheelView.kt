@@ -14,6 +14,8 @@ import kotlin.math.*
 /**
  * Plain view showing a color wheel.
  */
+
+// TODO Save geometry on rotation
 class ColorWheelView(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
 
@@ -28,7 +30,7 @@ class ColorWheelView(context: Context, attrs: AttributeSet) : View(context, attr
     private val triangle: Triangle
     private val circle: HueCircle
 
-    var listener: ((View, Int) -> Unit)? = null
+    var listener: Listener? = null
 
     // color is calculated as comp colorFraction + whiteFraction.
     // colorFraction is related to saturation while whiteFraction
@@ -210,7 +212,7 @@ class ColorWheelView(context: Context, attrs: AttributeSet) : View(context, attr
     }
 
     private fun onColorChanged(color: Int) {
-        listener?.invoke(this, color)
+        listener?.colorChanged(color)
     }
 
     private fun drawDot(canvas: Canvas, x: Float, y: Float) {
@@ -556,5 +558,9 @@ class ColorWheelView(context: Context, attrs: AttributeSet) : View(context, attr
 
             paint.shader = shader
         }
+    }
+
+    interface Listener {
+        fun colorChanged(color: Int)
     }
 }
