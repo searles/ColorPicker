@@ -57,7 +57,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/colorPreview"
-            tools:layout_conversion_absoluteHeight="395dp"
-            tools:layout_conversion_absoluteWidth="395dp" />
+            />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

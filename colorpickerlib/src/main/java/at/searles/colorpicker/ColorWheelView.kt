@@ -18,9 +18,6 @@ import kotlin.math.*
 // TODO Save geometry on rotation
 class ColorWheelView(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
-
-    private val colorKey = "color"
-
     private val desiredSizeDp: Float = 320F
     private var dotRadiusDp: Float = 8F
 
@@ -196,18 +193,22 @@ class ColorWheelView(context: Context, attrs: AttributeSet) : View(context, attr
     }
 
     override fun onSaveInstanceState(): Parcelable? {
-        super.onSaveInstanceState() // ignore. Parent is a 
+        super.onSaveInstanceState()
 
         val bundle = Bundle()
         bundle.putInt(colorKey, color)
+        bundle.putFloat(hueKey, hue)
         return bundle
     }
 
     override fun onRestoreInstanceState(state: Parcelable?) {
-        super.onRestoreInstanceState(null) // ignore, parent is a 
+        super.onRestoreInstanceState(null)
 
         if (state is Bundle) {
             this.color = state.getInt(colorKey)
+            this.hue = state.getFloat(hueKey)
+
+            triangle.hueUpdated()
         }
     }
 
@@ -562,5 +563,10 @@ class ColorWheelView(context: Context, attrs: AttributeSet) : View(context, attr
 
     interface Listener {
         fun colorChanged(color: Int)
+    }
+
+    companion object {
+        private const val colorKey = "color"
+        private const val hueKey = "hue"
     }
 }
