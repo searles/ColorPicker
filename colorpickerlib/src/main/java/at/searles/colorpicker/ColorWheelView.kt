@@ -14,8 +14,6 @@ import kotlin.math.*
 /**
  * Plain view showing a color wheel.
  */
-
-// TODO Save geometry on rotation
 class ColorWheelView(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
     private val desiredSizeDp: Float = 320F

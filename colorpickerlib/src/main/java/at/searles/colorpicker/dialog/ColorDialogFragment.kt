@@ -6,40 +6,33 @@ import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.widget.EditText
+import android.view.LayoutInflater
+import android.widget.AutoCompleteTextView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import at.searles.colorpicker.ColorIconView
 import at.searles.colorpicker.ColorWheelView
 import at.searles.colorpicker.R
-import com.google.android.material.textfield.TextInputLayout
-import java.lang.IllegalArgumentException
+import at.searles.colorpicker.utils.ColorEntriesAdapter
+import at.searles.colorpicker.utils.DefaultColors
 
 class ColorDialogFragment : DialogFragment() {
 
     private var color: Int = 0
+    private lateinit var colorMap: Map<String, Int>
+    private lateinit var wheelView: ColorWheelView
+    private lateinit var colorPreview: ColorIconView
+    private lateinit var colorEditText: AutoCompleteTextView
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("SetTextI18n", "InflateParams")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val builder = AlertDialog.Builder(context!!)
-        builder.setView(R.layout.color_combined_fragment)
+        colorMap = DefaultColors(context!!).list.map { it.name to it.rgb}.toMap()
 
-        builder.setPositiveButton(android.R.string.ok) { _, _ ->
-            (activity as ColorDialogCallback).setColor(this@ColorDialogFragment, color)
-            dismiss()
-        }
+        val view = LayoutInflater.from(context!!).inflate(R.layout.color_combined_fragment, null)
 
-        builder.setNegativeButton(android.R.string.cancel) { _, _ ->
-            dismiss()
-        }
-
-        val dialog = builder.show()
-
-        // set up views
-        val wheelView: ColorWheelView = dialog.findViewById(R.id.wheel)!!
-        val colorPreview: ColorIconView = dialog.findViewById(R.id.colorPreview)!!
-        val colorEditText: EditText = dialog.findViewById(R.id.colorEditText)!!
-        val colorInputLayout: TextInputLayout = dialog.findViewById(R.id.colorInputLayout)!!
+        wheelView = view.findViewById(R.id.wheel)!!
+        colorPreview = view.findViewById(R.id.colorPreview)!!
+        colorEditText = view.findViewById(R.id.colorEditText)!!
 
         if(savedInstanceState == null) {
             color = arguments!!.getInt(colorKey)
@@ -48,17 +41,27 @@ class ColorDialogFragment : DialogFragment() {
             colorEditText.setText("#${toColorString(color)}")
         }
 
-        val listener = Listener(wheelView, colorEditText, colorPreview, colorInputLayout)
+        val mediator = Mediator()
 
-        wheelView.listener = listener
-        colorEditText.addTextChangedListener(listener)
+        wheelView.listener = mediator
+        colorEditText.addTextChangedListener(mediator)
 
-        return dialog
+        colorEditText.setAdapter(ColorEntriesAdapter(context!!))
+        colorEditText.threshold = 1
+
+        return AlertDialog.Builder(context!!).apply {
+            setView(view)
+            setPositiveButton(android.R.string.ok) { _, _ ->
+                (activity as ColorDialogCallback).setColor(this@ColorDialogFragment, color)
+                dismiss()
+            }
+            setNegativeButton(android.R.string.cancel) { _, _ ->
+                dismiss()
+            }
+        }.show()
     }
 
-    private inner class Listener(val wheelView: ColorWheelView, val colorEditText: EditText,
-                                 val colorPreview: ColorIconView, val colorInputLayout: TextInputLayout
-    ) : TextWatcher, ColorWheelView.Listener {
+    private inner class Mediator : TextWatcher, ColorWheelView.Listener {
         private var textInputListenerEnabled = true
 
         override fun afterTextChanged(s: Editable) {
@@ -68,14 +71,23 @@ class ColorDialogFragment : DialogFragment() {
                 return
             }
 
-            try {
-                color = Color.parseColor(s.toString())
-                wheelView.color = color
-                colorPreview.color = color
-                colorInputLayout.error = null
-            } catch(e: IllegalArgumentException) {
-                colorInputLayout.error = getString(R.string.badColorFormatError)
+            val colorString = s.toString()
+
+            color = if (colorMap.containsKey(colorString)) {
+                colorMap.getValue(colorString)
+            } else {
+                try {
+                    Color.parseColor(colorString)
+                } catch(e: IllegalArgumentException) {
+                    colorEditText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_warning, 0)
+                    return
+                }
             }
+
+            colorEditText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_check, 0)
+
+            wheelView.color = color
+            colorPreview.color = color
         }
 
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -92,8 +104,9 @@ class ColorDialogFragment : DialogFragment() {
             colorPreview.color = color
             textInputListenerEnabled = false
             colorEditText.setText("#${toColorString(color)}")
-            colorInputLayout.error = null
             textInputListenerEnabled = true
+
+            colorEditText.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
         }
     }
 
@@ -113,10 +126,10 @@ class ColorDialogFragment : DialogFragment() {
             val g = Color.green(color)
             val b = Color.blue(color)
 
-            if(alpha != 0xff) {
-                return String.format("%02x%02x%02x%02x", alpha, r, g, b)
+            return if(alpha != 0xff) {
+                String.format("%02x%02x%02x%02x", alpha, r, g, b)
             } else {
-                return String.format("%02x%02x%02x", r, g, b)
+                String.format("%02x%02x%02x", r, g, b)
             }
         }
     }

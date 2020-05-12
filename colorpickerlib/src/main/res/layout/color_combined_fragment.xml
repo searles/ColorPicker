@@ -17,33 +17,24 @@
             tools:layout_conversion_absoluteHeight="48dp"
             tools:layout_conversion_absoluteWidth="48dp" />
 
-    <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/colorInputLayout"
+    <AutoCompleteTextView
+            android:id="@+id/colorEditText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="@string/enterColorHint"
+            android:inputType="textPersonName"
+            tools:ignore="Autofill"
+            tools:layout_conversion_absoluteHeight="45dp"
+            tools:layout_conversion_absoluteWidth="0dp"
+            tools:layout_editor_absoluteX="64dp"
+            tools:layout_editor_absoluteY="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/colorPreview"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:layout_conversion_absoluteHeight="53dp"
-            tools:layout_conversion_absoluteWidth="0dp">
-
-        <EditText
-                android:id="@+id/colorEditText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:hint="@string/enterColorHint"
-                android:inputType="textPersonName"
-                tools:ignore="Autofill"
-                tools:layout_conversion_absoluteHeight="45dp"
-                tools:layout_conversion_absoluteWidth="0dp"
-                tools:layout_editor_absoluteX="64dp"
-                tools:layout_editor_absoluteY="8dp" />
-    </com.google.android.material.textfield.TextInputLayout>
-
+            app:layout_constraintTop_toTopOf="parent"/>
 
     <at.searles.colorpicker.ColorWheelView
             android:id="@+id/wheel"
