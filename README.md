@@ -27,7 +27,7 @@ Step 2. Add the dependency
 
 ~~~
 	dependencies {
-	        implementation 'com.github.searles:colorpicker:Tag'
+	        implementation project(':colorpicker')
 	}
 ~~~
 
